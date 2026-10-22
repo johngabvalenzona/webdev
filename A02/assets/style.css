@@ -1,0 +1,165 @@
+body {
+    background-color: #faf8f2;
+    color: #3b2f2a;
+}
+
+/* ---------- Saffron Silk Aura Gradient ---------- */
+.aura-bg {
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+/* Layer 1: Saffron yellow */
+.aura-layer-1 {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 25%, rgba(234, 179, 8, 0.6) 0%, transparent 50%);
+    mix-blend-mode: normal;
+    filter: blur(188px);
+    transform: translateZ(0);
+    will-change: transform;
+    pointer-events: none;
+}
+
+/* Layer 2: Golden amber */
+.aura-layer-2 {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 30%, rgba(217, 119, 6, 0.5) 0%, transparent 45%);
+    mix-blend-mode: normal;
+    filter: blur(175px);
+    transform: translateZ(0);
+    will-change: transform;
+    pointer-events: none;
+}
+
+/* Layer 3: Warm terracotta */
+.aura-layer-3 {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 80%, rgba(180, 83, 9, 0.4) 0%, transparent 55%);
+    mix-blend-mode: multiply;
+    filter: blur(200px);
+    transform: translateZ(0);
+    will-change: transform;
+    pointer-events: none;
+}
+
+/* Layer 4: Soft golden yellow */
+.aura-layer-4 {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(251, 191, 36, 0.3) 0%, transparent 40%);
+    mix-blend-mode: multiply;
+    filter: blur(150px);
+    transform: translateZ(0);
+    will-change: transform;
+    pointer-events: none;
+}
+
+.aura-content {
+    position: relative;
+    z-index: 1;
+}
+
+@media (min-width: 768px) {
+    .aura-layer-1 {
+        filter: blur(260px);
+    }
+
+    .aura-layer-2 {
+        filter: blur(252px);
+    }
+
+    .aura-layer-3 {
+        filter: blur(260px);
+    }
+
+    .aura-layer-4 {
+        filter: blur(216px);
+    }
+}
+
+/* ---------- Branding ---------- */
+.brand-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 4rem;
+    letter-spacing: 0.08em;
+    color: #2f4a3a;
+}
+
+.brand-subtitle {
+    color: #8a3f22;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+/* ---------- Menu cards ---------- */
+.card {
+    background-color: rgba(255, 253, 248, 0.94);
+    border-color: #d9cbb8 !important;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(90, 60, 30, 0.15);
+    border-color: #b5654a !important;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.04);
+}
+
+.card-title {
+    font-family: Georgia, "Times New Roman", serif;
+    color: #2f4a3a;
+}
+
+.short-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.price {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #b5654a;
+}
+
+.category-badge {
+    background-color: #e9efe9;
+    color: #2f4a3a;
+    border: 1px solid #c5d3c8;
+}
+
+/* ---------- Modal ---------- */
+.modal-content {
+    background-color: #fffdf8;
+    border: 1px solid #d9cbb8;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.modal-img {
+    height: 260px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.modal-details {
+    color: #6b5d55;
+}
