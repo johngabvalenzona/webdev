@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SHINOBI ARCHIVES – Villages</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="site-nav py-2">
+    <div class="container">
+      <a class="brand" href="index.html">忍 SHINOBI <span>ARCHIVES</span></a>
+    </div>
+  </nav>
+
+  <header class="banner">
+    <div class="container">
+      <h1>Discover the Hidden Villages of the Shinobi World.</h1>
+      <input type="text" id="searchInput" class="form-control mt-4" placeholder="Search villages..."
+        oninput="searchVillages()">
+    </div>
+  </header>
+
+  <main class="container mt-4">
+    <div id="message"></div>
+    <div id="villageList" class="row g-3"></div>
+  </main>
+
+  <div class="container pt-4 text-center">
+    <a href="https://johngabvalenzona.github.io/" class="btn btn-sm rounded-pill back-btn">
+      &larr; Back to Portfolio
+    </a>
+  </div>
+
+  <footer class="text-center">Data from the Dattebayo API</footer>
+
+  <script src="assets/filter.js"></script>
+  <script>
+    let allVillages = [];
+
+    async function getVillages() {
+      document.getElementById("message").innerHTML =
+        '<div class="text-center my-5"><div class="spinner-border text-danger"></div><p class="mt-2">Loading villages...</p></div>';
+      try {
+        const data = await loadEligibleData(showProgress);
+        allVillages = data.villages;
+        document.getElementById("message").innerHTML = "";
+        showVillages(allVillages);
+        loadVillageImages(allVillages);
+      } catch (error) {
+        document.getElementById("message").innerHTML =
+          '<div class="alert alert-danger">Oops! The villages could not be loaded. The API may be waking up, so please try again in a moment.</div>';
+      }
+    }
+
+    function showVillages(list) {
+      let html = "";
+      for (let i = 0; i < list.length; i++) {
+        const v = list[i];
+        const count = v.characters ? v.characters.length : 0;
+        const known = villageImages[v.name];
+        const imageStyle = known ? " style=\"background-image:url('" + known + "')\"" : "";
+        html += `
+          <div class="col-12 col-sm-6 col-lg-3">
+            <a class="village-card" href="view.html?village=${v.id}">
+              <div class="village-img" id="villageImg-${v.id}" role="img" aria-label="${v.name}"${imageStyle}></div>
+              <div class="body">
+                <h3>${v.name}</h3>
+                <div class="count">${count} character${count === 1 ? "" : "s"}</div>
+              </div>
+            </a>
+          </div>`;
+      }
+      if (list.length === 0) {
+        html = '<p class="text-center my-4">No villages match your search.</p>';
+      }
+      document.getElementById("villageList").innerHTML = html;
+    }
+
+    function searchVillages() {
+      const term = document.getElementById("searchInput").value.trim().toLowerCase();
+      const results = [];
+      for (let i = 0; i < allVillages.length; i++) {
+        if (allVillages[i].name.toLowerCase().includes(term)) {
+          results.push(allVillages[i]);
+        }
+      }
+      showVillages(results);
+    }
+
+    const WIKI_API = "https://naruto.fandom.com/api.php";
+    const IMAGE_CACHE_KEY = "shinobiVillageImages_v1";
+    let villageImages = {};
+
+    function loadImageCache() {
+      try {
+        villageImages = JSON.parse(localStorage.getItem(IMAGE_CACHE_KEY)) || {};
+      } catch (error) {
+        villageImages = {};
+      }
+    }
+
+    function saveImageCache() {
+      try {
+        localStorage.setItem(IMAGE_CACHE_KEY, JSON.stringify(villageImages));
+      } catch (error) { }
+    }
+
+    function simpleName(name) {
+      return name.toLowerCase().replace(" village", "").trim();
+    }
+
+    async function findVillageImage(name) {
+      const url = WIKI_API + "?action=query&format=json&origin=*&generator=search&gsrlimit=5" +
+        "&gsrsearch=" + encodeURIComponent(name) +
+        "&prop=pageimages&piprop=thumbnail&pithumbsize=400";
+      const response = await fetch(url);
+      const data = await response.json();
+      if (!data.query || !data.query.pages) return "";
+      for (const key in data.query.pages) {
+        const page = data.query.pages[key];
+        if (simpleName(page.title) === simpleName(name) && page.thumbnail && page.thumbnail.source) {
+          return page.thumbnail.source.replace("'", "%27");
+        }
+      }
+      return "";
+    }
+
+    function showVillageImage(id, url) {
+      const box = document.getElementById("villageImg-" + id);
+      if (box && url !== "") {
+        box.style.backgroundImage = "url('" + url + "')";
+      }
+    }
+
+    async function loadVillageImages(list) {
+      for (let i = 0; i < list.length; i++) {
+        const name = list[i].name;
+        if (villageImages[name] !== undefined) continue;
+        try {
+          let url = await findVillageImage(name);
+          if (url !== "" && !(await checkImage(url))) url = "";
+          villageImages[name] = url;
+          saveImageCache();
+          showVillageImage(list[i].id, url);
+        } catch (error) {
+        }
+      }
+    }
+
+    loadImageCache();
+    getVillages();
+  </script>
+</body>
+
+</html>
